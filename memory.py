@@ -15,6 +15,8 @@ from turtle import *
 from freegames import path
 
 car = path('car.gif')
+state = {'mark': None, 'count_tap': 0}
+hide = [True] * 16
 
 symbols = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 
     'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 
@@ -22,8 +24,6 @@ symbols = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ',
     '∑', '∫', '∆', '∇', '∂', '∞', '≈', '≠']
 
 tiles = symbols * 2
-state = {'mark': None}
-hide = [True] * 64
 
 
 def square(x, y):
@@ -34,19 +34,19 @@ def square(x, y):
     color('black', 'white')
     begin_fill()
     for count in range(4):
-        forward(50)
+        forward(100)
         left(90)
     end_fill()
 
 
 def index(x, y):
     """Convert (x, y) coordinates to tiles index."""
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
+    return int((x + 200) // 100 + ((y + 200) // 100) * 4)
 
 
 def xy(count):
     """Convert tiles count to (x, y) coordinates."""
-    return (count % 8) * 50 - 200, (count // 8) * 50 - 200
+    return (count % 4) * 100 - 200, (count // 4) * 100 - 200
 
 
 def tap(x, y):
@@ -54,12 +54,18 @@ def tap(x, y):
     spot = index(x, y)
     mark = state['mark']
 
-    if mark is None or mark == spot or tiles[mark] != tiles[spot]:
+    if mark is None or tiles[mark] != tiles[spot]:
+        state['mark'] = spot
+        state['count_tap'] += 1
+    elif mark == spot:
         state['mark'] = spot
     else:
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
+        state['count_tap'] += 1
+    print('Total de taps:', state['count_tap'])
+    
 
 
 def draw():
@@ -69,7 +75,7 @@ def draw():
     shape(car)
     stamp()
 
-    for count in range(64):
+    for count in range(16):
         if hide[count]:
             x, y = xy(count)
             square(x, y)
@@ -82,7 +88,11 @@ def draw():
         goto(x + 25, y + 5)
         color('black')
         write(tiles[mark], font=('Arial', 26, 'normal'), align = 'center')
-
+    up()
+    goto(-190, 180)
+    color('red')
+    write('Taps: ' + str(state['count_tap']), font=('Arial', 16, 'bold'))
+    
     update()
     ontimer(draw, 100)
 
