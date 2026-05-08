@@ -15,9 +15,15 @@ from turtle import *
 from freegames import path
 
 car = path('car.gif')
-tiles = list(range(8)) * 2
 state = {'mark': None, 'count_tap': 0}
 hide = [True] * 16
+
+symbols = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 
+    'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 
+    'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω',
+    '∑', '∫', '∆', '∇', '∂', '∞', '≈', '≠']
+
+tiles = symbols * 2
 
 
 def square(x, y):
@@ -79,14 +85,14 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
-        color('green')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        goto(x + 25, y + 5)
+        color('black')
+        write(tiles[mark], font=('Arial', 26, 'normal'), align = 'center')
     up()
     goto(-190, 180)
     color('red')
     write('Taps: ' + str(state['count_tap']), font=('Arial', 16, 'bold'))
-
+    
     update()
     ontimer(draw, 100)
 
