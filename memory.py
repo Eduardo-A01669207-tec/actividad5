@@ -16,7 +16,7 @@ from freegames import path
 
 car = path('car.gif')
 tiles = list(range(32)) * 2
-state = {'mark': None}
+state = {'mark': None, 'count_tap': 0}
 hide = [True] * 64
 
 
@@ -48,12 +48,18 @@ def tap(x, y):
     spot = index(x, y)
     mark = state['mark']
 
-    if mark is None or mark == spot or tiles[mark] != tiles[spot]:
+    if mark is None or tiles[mark] != tiles[spot]:
+        state['mark'] = spot
+        state['count_tap'] += 1
+    elif mark == spot:
         state['mark'] = spot
     else:
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
+        state['count_tap'] += 1
+    print('Total de taps:', state['count_tap'])
+    
 
 
 def draw():
@@ -74,8 +80,12 @@ def draw():
         x, y = xy(mark)
         up()
         goto(x + 2, y)
-        color('black')
+        color('green')
         write(tiles[mark], font=('Arial', 30, 'normal'))
+    up()
+    goto(-190, 180)
+    color('red')
+    write('Taps: ' + str(state['count_tap']), font=('Arial', 16, 'bold'))
 
     update()
     ontimer(draw, 100)
